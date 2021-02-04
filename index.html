@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Temperature Hot</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url(images/bg-image.jpg) no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form class="col-md-6 m-auto py-5">
+            <div class="input-group mb-3">
+                <input id="inputValue" type="text" class="form-control" placeholder="Enter a location for Weather ...">
+                <div class="input-group-append">
+                    <button id="button" type="button" class="btn btn-danger search">Search</button>
+                </div>
+            </div>
+        </form>
+        <div class="weather-status text-white text-center">
+            <img id="image" src="https://openweathermap.org/img/wn/02d@2x.png" alt="">
+            <h1 id="cityName">Dhaka</h1>
+            <h3><span id="temp">38.06</span>&deg;C</h3>
+            <h4><span >Feels Like: <span id="feeltemp">38.06</span> </span>&deg;C</h5>
+            <h1 id="desc" class="lead">Clouds</h1>
+        </div>
+    </div>
+
+    <script>
+        const inputValues = document.getElementById('inputValue');
+
+        const buttons = document.getElementById('button').addEventListener('click', function () {
+            mainFuntion()
+        });
+
+
+
+        function mainFuntion() {
+            fetch('https://api.openweathermap.org/data/2.5/weather?q=' + inputValues.value +
+                    '&appid=f1ccda012685b2e856e81b3860163aca')
+                .then(response => response.json())
+                .then(json => {
+                    const Temp = json.main.temp;
+                    const TempKtoC = (Temp - 273.15);
+                    const TempToNumber = Math.round(TempKtoC);
+
+                    const FelTemp = json.main.feels_like;
+                    const TktoC = (FelTemp - 273.15);
+                    const feeTempToNumber = Math.round(TktoC);
+
+
+                    const city = json.name;
+                    const desc = json.weather[0];
+                    const descripTion = `${desc.description}`
+                    
+                    document.getElementById('temp').innerText = TempToNumber;
+                    document.getElementById('feeltemp').innerText = feeTempToNumber;
+                    document.getElementById('cityName').innerText = city;
+                    document.getElementById('desc').innerText = descripTion;
+                    const images = document.getElementById('image');
+
+
+                })
+                .catch(err => alert('wrong city name!'))
+
+        }
+
+        // function calcTime(city, offset) {
+        //     // create Date object for current location
+        //     var d = new Date();
+
+        //     // convert to msec
+        //     // subtract local time zone offset
+        //     // get UTC time in msec
+        //     var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+
+        //     // create new Date object for different city
+        //     // using supplied offset
+        //     var nd = new Date(utc + (3600000 * offset));
+
+        //     // return time as a string
+        //     return "The local time for city"  + city + " is " + nd.toLocaleString();
+        // }
+
+        // alert(calcTime('Washington', '+5.5'));
+    </script>
+
+</body>
+
+</html>
